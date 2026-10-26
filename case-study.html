@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voyara Case Study</title>
+  <meta name="description" content="Voyara: a full-stack travel booking app in TypeScript - React, Express, MongoDB, Stripe, Mapbox, Docker, GitHub Actions and Fly.io." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #16a34a;
+      --green-dark: #15803d;
+      --blue: #4a86c5;
+      --blue-dark: #2f5783;
+      --blue-text: #d6e6f5;
+      --pale: #ebf2f8;
+      --bg: #ffffff;
+      --surface: #f7f7f7;
+      --ink: #111827;
+      --body: #374151;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --code-bg: #f3f4f6;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1115;
+        --surface: #161a20;
+        --ink: #f3f4f6;
+        --body: #d1d5db;
+        --muted: #9ca3af;
+        --line: #2a2f37;
+        --pale: #18222d;
+        --code-bg: #1d232b;
+        --green: #22c55e;
+        --green-dark: #4ade80;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1115;
+      --surface: #161a20;
+      --ink: #f3f4f6;
+      --body: #d1d5db;
+      --muted: #9ca3af;
+      --line: #2a2f37;
+      --pale: #18222d;
+      --code-bg: #1d232b;
+      --green: #22c55e;
+      --green-dark: #4ade80;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--body);
+      font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+    a { color: var(--green-dark); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+    header.top {
+      border-bottom: 3px solid var(--green);
+      background: var(--bg);
+    }
+    header.top .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 18px; padding-bottom: 18px; gap: 16px;
+    }
+    .wordmark {
+      font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--green); text-decoration: none; font-size: 15px;
+    }
+    .top nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+
+    .eyebrow {
+      margin: 0 0 10px; font-size: 11px; font-weight: 600;
+      letter-spacing: 3px; text-transform: uppercase; color: var(--green-dark);
+    }
+    h1, h2 { color: var(--ink); font-weight: 300; line-height: 1.2; margin: 0; }
+    h1 { font-size: clamp(30px, 6vw, 46px); }
+    h2 { font-size: clamp(24px, 4vw, 30px); }
+    h3 { color: var(--ink); font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+
+    .hero {
+      background: var(--blue-dark);
+      background-image: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: #fff; padding: 72px 0 64px;
+    }
+    .hero .eyebrow { color: var(--blue-text); }
+    .hero h1 { color: #fff; }
+    .hero p.lead { max-width: 640px; font-size: 18px; opacity: 0.92; margin: 18px 0 0; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn {
+      display: inline-block; padding: 14px 26px; font-size: 13px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+    }
+    .btn-solid { background: var(--green); color: #fff; }
+    .btn-outline { border: 1px solid #fff; color: #fff; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--line); border: 1px solid var(--line); margin-top: -32px;
+      position: relative;
+    }
+    .stat { background: var(--bg); padding: 22px 18px; }
+    .stat b { display: block; font-size: 30px; font-weight: 300; color: var(--ink); line-height: 1.1; }
+    .stat span { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+
+    section { padding: 64px 0; }
+    section.alt { background: var(--surface); }
+    section.pale { background: var(--pale); }
+    .intro { max-width: 680px; margin: 14px 0 0; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 32px; }
+    .grid p { margin: 0; }
+    .card { border-top: 1px solid var(--line); padding-top: 16px; }
+
+    table.stack { width: 100%; border-collapse: collapse; margin-top: 28px; font-size: 15px; }
+    table.stack th, table.stack td {
+      text-align: left; padding: 12px 12px 12px 0; border-top: 1px solid var(--line); vertical-align: top;
+    }
+    table.stack th { width: 30%; color: var(--ink); font-weight: 600; }
+
+    pre {
+      background: var(--code-bg); color: var(--ink); padding: 18px; overflow-x: auto;
+      font-size: 13px; line-height: 1.5; margin: 24px 0 0; border-left: 3px solid var(--green);
+    }
+    code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+    p code, li code { background: var(--code-bg); padding: 1px 5px; font-size: 0.9em; }
+
+    ul.ticks { list-style: none; padding: 0; margin: 20px 0 0; }
+    ul.ticks li { padding: 10px 0 10px 28px; border-top: 1px solid var(--line); position: relative; }
+    ul.ticks li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 600; }
+
+    .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 28px; }
+    .demo dl { margin: 0; }
+    .demo dt { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .demo dd { margin: 2px 0 14px; color: var(--ink); font-family: "SFMono-Regular", Consolas, monospace; font-size: 15px; }
+
+    .shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 32px; }
+    .shots figure { margin: 0; }
+    .shots a { display: block; }
+    .shots img {
+      display: block; width: 100%; height: auto;
+      border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    .shots figcaption { margin-top: 10px; font-size: 14px; color: var(--muted); }
+
+    footer { padding: 40px 0; text-align: center; color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 720px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .grid, .demo, .shots { grid-template-columns: 1fr; }
+      table.stack th { width: 38%; }
+      section { padding: 48px 0; }
+      .hero { padding: 56px 0 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <div class="wrap">
+      <a class="wordmark" href="/">John V</a>
+      <nav><a href="/">← Portfolio</a></nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Case study · Full-stack</p>
+      <h1>Voyara - a travel booking app, built end to end</h1>
+      <p class="lead">
+        Tours with route maps, a gear shop with a cart, Stripe payments and
+        user accounts - written in TypeScript from the React frontend to the
+        Express API, tested, containerised and deployed through a gated CI/CD
+        pipeline.
+      </p>
+      <div class="actions">
+        <a class="btn btn-solid" href="https://john-v.dev">Open the live demo</a>
+        <a class="btn btn-outline" href="#demo">Demo login</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>~650</b><span>Automated tests</span></div>
+      <div class="stat"><b>6</b><span>Parallel CI checks</span></div>
+      <div class="stat"><b>0</b><span>Known prod vulnerabilities</span></div>
+      <div class="stat"><b>100%</b><span>TypeScript</span></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">The product</p>
+      <h2>What a visitor can do</h2>
+      <div class="grid">
+        <div class="card"><h3>Find a tour</h3><p>Filter by location, difficulty, length and price, sort by price or rating. Every tour has a readable address like <code>/tour/the-sea-explorer</code>.</p></div>
+        <div class="card"><h3>See the route</h3><p>A Mapbox map numbers each stop by day and draws the driving route between them, with distance and drive time.</p></div>
+        <div class="card"><h3>Book and pay</h3><p>Choose a date and guests - a per-guest service fee is added - and pay through Stripe Checkout.</p></div>
+        <div class="card"><h3>Shop for gear</h3><p>A cart that works without an account (kept in the browser) and syncs to the account after login.</p></div>
+        <div class="card"><h3>Manage an account</h3><p>Sign up, log in, reset a password; bookings, favourites, reviews and settings in one place.</p></div>
+        <div class="card"><h3>Review honestly</h3><p>Only travellers who booked a tour can review it. Light and dark themes throughout.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <p class="eyebrow">Screenshots</p>
+      <h2>The app in use</h2>
+      <div class="shots">
+        <figure><a href="pictures/Tours-Page.png"><img src="pictures/Tours-Page.png" alt="Tours page with filters and tour cards" loading="lazy" /></a><figcaption>Tours - filter, sort and browse</figcaption></figure>
+        <figure><a href="pictures/Tour-details.png"><img src="pictures/Tour-details.png" alt="Tour details page with the Mapbox route map" loading="lazy" /></a><figcaption>Tour details with the day-by-day route map</figcaption></figure>
+        <figure><a href="pictures/Checkout.png"><img src="pictures/Checkout.png" alt="Checkout page with date, guests and price summary" loading="lazy" /></a><figcaption>Checkout - date, guests, then Stripe</figcaption></figure>
+        <figure><a href="pictures/My-account.png"><img src="pictures/My-account.png" alt="My account page with bookings, favourites and settings" loading="lazy" /></a><figcaption>My account - bookings, favourites, reviews</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Under the hood</p>
+      <h2>Tech stack</h2>
+      <table class="stack">
+        <tr><th>Frontend</th><td>React 19, TypeScript, Redux Toolkit + RTK Query, React Router 7, Tailwind CSS 4, Vite</td></tr>
+        <tr><th>Maps</th><td>Mapbox GL (react-map-gl), Mapbox Directions</td></tr>
+        <tr><th>Backend</th><td>Node 22, Express, TypeScript, Mongoose 8 on MongoDB Atlas</td></tr>
+        <tr><th>Security</th><td>JWT, bcrypt, Helmet, rate limiting, NoSQL-injection sanitising, HPP, CORS allow-list</td></tr>
+        <tr><th>Payments &amp; email</th><td>Stripe Checkout; Nodemailer + SendGrid with Pug templates</td></tr>
+        <tr><th>Testing</th><td>Vitest + Testing Library; Jest + Supertest; MongoDB integration tests</td></tr>
+        <tr><th>Delivery</th><td>Docker multi-stage builds, docker compose, GitHub Actions, Fly.io, nginx</td></tr>
+      </table>
+      <pre><code> Browser ──► nginx (Fly)  ── static React build
+    │
+    └── HTTPS / JSON ──► Express API (Fly) ──► MongoDB Atlas
+                              ├──► Stripe Checkout
+                              └──► SendGrid</code></pre>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <p class="eyebrow">Quality</p>
+      <h2>Tested, and deployed through a gate</h2>
+      <p class="intro">
+        About 650 automated tests cover both apps: 214 on the frontend (pages,
+        hooks, Redux slices, the map, checkout flows) and 439 on the backend -
+        every route, auth, rate limits, the error handler, a dedicated
+        NoSQL-injection suite, and integration tests against a real MongoDB.
+      </p>
+      <pre><code> lint (backend) ─┐
+ lint (frontend) ┤
+ npm audit       ┼─► build ─► deploy API / deploy web
+ tests (backend) ┤              (manual button only)
+ tests (frontend)┤
+ docker build x2 ┘</code></pre>
+      <ul class="ticks">
+        <li>Six independent checks run in parallel on every push and pull request.</li>
+        <li>Deploys are manual and gated: the button re-runs every check and deploys only if all pass. Merging never deploys by itself.</li>
+        <li>Both Docker images are built in CI, so a broken Dockerfile shows up before deploy day.</li>
+        <li>Secrets live only in Fly and GitHub secrets - never in the repository or an image layer.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Decisions</p>
+      <h2>Engineering choices worth discussing</h2>
+      <div class="grid">
+        <div class="card"><h3>One route, id or slug</h3><p><code>GET /tours/:idOrSlug</code> reads a 24-character hex value as a MongoDB id and anything else as a slug - readable page URLs, stable ids for bookings and reviews.</p></div>
+        <div class="card"><h3>Errors people can act on</h3><p>Database and token errors become clear 4xx responses. The public sees fixed messages; details go to the logs.</p></div>
+        <div class="card"><h3>Tests that run anywhere</h3><p>A fixed time zone, placeholder tokens and a mock API port make CI and a fresh clone behave exactly like the developer's machine.</p></div>
+        <div class="card"><h3>Lean, safe images</h3><p>The API is compiled with the full toolchain, then copied into a slim image running as a non-root user; the web app is unprivileged nginx with long-term caching for hashed assets.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pale" id="demo">
+    <div class="wrap">
+      <p class="eyebrow">Try it</p>
+      <h2>Demo access</h2>
+      <div class="demo">
+        <dl>
+          <dt>Email</dt><dd>demo@john-v.dev</dd>
+          <dt>Password</dt><dd>Welcome12*</dd>
+        </dl>
+        <dl>
+          <dt>Test card (Stripe test mode)</dt><dd>4242 4242 4242 4242</dd>
+          <dt>Expiry / CVC</dt><dd>any future date / any 3 digits</dd>
+        </dl>
+      </div>
+      <p class="intro">
+        The source code lives in a private repository. I'm happy to walk
+        through it or share read access on request.
+      </p>
+      <div class="actions">
+        <a class="btn btn-solid" href="https://john-v.dev">Open the live demo</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Next</p>
+      <h2>Roadmap</h2>
+      <ul class="ticks">
+        <li>Stripe webhook, so bookings and gear orders are recorded after payment.</li>
+        <li>Email templates bundled into the production image.</li>
+        <li>Owner checks on editing and deleting reviews.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <!-- TODO: email / LinkedIn / GitHub -->
+      John V · <a href="https://john-v.dev">john-v.dev</a>
+    </div>
+  </footer>
+
+</body>
+</html>
